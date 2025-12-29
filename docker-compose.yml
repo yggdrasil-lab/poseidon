@@ -1,0 +1,26 @@
+services:
+  adguardhome:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "3000:3000/tcp" # Initial setup
+      - "853:853/tcp"  # DNS-over-TLS
+      - "784:784/udp"  # DNS-over-QUIC
+    volumes:
+      - ./data:/opt/adguardhome/work
+      - ./conf:/opt/adguardhome/conf
+    networks:
+      - aether-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adguard.rule=Host(`${ADGUARD_SUBDOMAIN}.${DOMAIN_NAME}`)"
+      - "traefik.http.routers.adguard.entrypoints=websecure"
+      - "traefik.http.routers.adguard.tls.certresolver=cloudflare"
+      - "traefik.http.services.adguard.loadbalancer.server.port=3000"
+
+networks:
+  aether-net:
+    external: true
