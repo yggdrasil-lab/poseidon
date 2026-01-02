@@ -12,6 +12,8 @@ services:
       - ./conf:/opt/adguardhome/conf
     networks:
       - aether-net
+    labels:
+      - "com.docker.compose.project=${STACK_NAME}"
     deploy:
       labels:
         - "traefik.enable=true"
