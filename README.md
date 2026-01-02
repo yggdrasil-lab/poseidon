@@ -46,7 +46,7 @@ The service is deployed via Docker Compose on the `gaia-runner` node.
 2. Adjust the variables in `.env` as needed.
 3. Start the stack:
    ```bash
-   docker compose up -d
+   ./start.sh
    ```
 
 ### 2. DNS Configuration (Split-Horizon)
