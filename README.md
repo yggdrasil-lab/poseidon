@@ -17,7 +17,7 @@ I am the guardian of your network's boundaries. My mission is to ensure that you
 ## Tech Stack
 
 *   **AdGuard Home**: Primary DNS server and network-wide ad-blocker.
-*   **Docker**: Containerization platform for deployment.
+*   **Docker Swarm**: Container orchestration platform for deployment.
 *   **Olympus (Traefik)**: Integrated for secure HTTPS access to the web UI.
 
 ## Architecture
@@ -30,14 +30,14 @@ I am the guardian of your network's boundaries. My mission is to ensure that you
 
 ## Prerequisites
 
-- **Docker & Docker Compose**
+- **Docker Swarm Mode**: Ensure the swarm is initialized (`docker swarm init`).
 - **Port 53 availability**: Ensure no other DNS service (like `systemd-resolved`) is binding to port 53 on the host.
-- **aether-net**: External Docker network shared with Olympus/Traefik.
+- **aether-net**: External Docker overlay network shared with Olympus/Traefik.
 
 ## Setup Instructions
 
 ### 1. Deployment
-The service is deployed via Docker Compose on the `gaia-runner` node.
+The service is deployed via Docker Swarm on the `gaia-runner` node.
 
 1. Create the `.env` file from the example:
    ```bash
