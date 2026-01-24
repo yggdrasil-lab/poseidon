@@ -30,9 +30,7 @@ I am the guardian of your network's boundaries. My mission is to ensure that you
 
 ## Prerequisites
 
-- **Docker Swarm Mode**: Ensure the swarm is initialized (`docker swarm init`).
-- **Port 53 availability**: Ensure no other DNS service (like `systemd-resolved`) is binding to port 53 on the host.
-- **aether-net**: External Docker overlay network shared with Olympus/Traefik.
+- **Platform Setup**: Swarm and Network must be initialized (see `Forge/yggdrasil-os`).
 
 ## Setup Instructions
 
