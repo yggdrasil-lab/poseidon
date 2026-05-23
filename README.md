@@ -35,28 +35,28 @@ I am the guardian of your network's boundaries. My mission is to ensure that you
 ## Setup Instructions
 
 ### 1. Deployment
-The service is deployed via Docker Swarm on the `gaia-runner` node.
+The service is deployed via GitHub Actions or manually via Docker Swarm on the Gaia node.
 
-1. Create the `.env` file from the example:
+1. Run the host setup script to ensure the persistent directories exist on the host with correct permissions:
    ```bash
-   cp .env.example .env
+   chmod +x setup_host.sh
+   ./setup_host.sh
    ```
-2. Adjust the variables in `.env` as needed.
-3. Start the stack:
+2. Deploy the stack manually (if not using the GitHub Actions workflow):
    ```bash
-   ./start.sh
+   docker stack deploy -c docker-compose.yml poseidon
    ```
 
 ### 2. DNS Configuration (Split-Horizon)
-AdGuard Home is configured to rewrite DNS requests for the internal domain to keep traffic local.
+AdGuard Home is configured to rewrite DNS requests for your internal domain to keep traffic local.
 
-- **Wildcard Rewrite:** `*.yourdomain.com` → `192.168.1.X`
-- **Root Rewrite:** `yourdomain.com` → `192.168.1.X`
+*   **Wildcard Rewrite:** `*.yourdomain.com` → `192.168.1.X`
+*   **Root Rewrite:** `yourdomain.com` → `192.168.1.X`
 
-This setting is managed in **AdGuard Home → Filters → DNS rewrites**.
+This setting is managed in the Web UI: **AdGuard Home ➔ Filters ➔ DNS rewrites**.
 
 ### 3. Client Setup
-To utilize Poseidon, clients (or the main router) must be configured to use `192.168.1.X` as their primary DNS server.
+To utilize Poseidon, clients (or your main router) must be configured to use your DNS server's IP as their primary DNS server.
 
 **Linux/macOS/Windows:**
 1. Open Network Settings.
@@ -64,26 +64,27 @@ To utilize Poseidon, clients (or the main router) must be configured to use `192
 3. Enter IP: `192.168.1.X`.
 
 **Router (Network-wide):**
-1. Log in to router admin panel.
+1. Log in to your router's admin panel.
 2. Set **Primary DNS** to `192.168.1.X`.
 
-## 📂 File Structure
+## 📂 File Structure & Persistency
 
-```graphql
-poseidon/
-├── docker-compose.yml  # Container definition
-├── conf/               # AdGuard main configuration (AdGuardHome.yaml)
-└── data/               # Persistent data (query logs, stats)
+Persistent configuration and query logs are stored on the host machine to prevent data loss during runner workspace updates:
+
+```text
+/opt/poseidon/
+├── conf/               # AdGuard configuration files (AdGuardHome.yaml)
+└── work/               # Persistent data (filters, query logs, stats)
 ```
 
 ## 🔗 Network Integration
 
-- **Network:** `aether-net` (External Docker network shared with Olympus/Traefik).
-- **Traefik Labels:** Configured in `docker-compose.yml` to expose the web UI securely via HTTPS.
+*   **Network:** `aether-net` (External Docker network shared with Olympus/Traefik).
+*   **Traefik Labels:** Exposes the Web UI securely at `yoursubdomain.yourdomain.com`.
 
 ## 🚀 Services
 
-| Service | URL | Description |
+| Service | URL / Port | Description |
 | :--- | :--- | :--- |
-| **AdGuard Home** | `https://adguard.yourdomain.com` | DNS server, ad-blocker, and network monitor. |
-| **DNS Resolver** | `192.168.1.X:53` | The primary DNS entry point for clients. |
+| **AdGuard Home (UI)** | `https://yoursubdomain.yourdomain.com` | Admin dashboard (secured by Authelia). |
+| **DNS Resolver** | `192.168.1.X:53` | Primary DNS entry point for clients (TCP/UDP). |
