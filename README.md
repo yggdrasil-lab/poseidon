@@ -47,7 +47,22 @@ The service is deployed via GitHub Actions or manually via Docker Swarm on the G
    docker stack deploy -c docker-compose.yml poseidon
    ```
 
-### 2. DNS Configuration (Split-Horizon)
+### 2. Initial Setup Wizard (Port 3000 to Port 80)
+When deploying AdGuard Home for the first time, you must complete the setup wizard:
+1. Ensure the Traefik load balancer port in `docker-compose.yml` is temporarily set to **`3000`** (the default port for the wizard):
+   ```yaml
+   - "traefik.http.services.adguard.loadbalancer.server.port=3000"
+   ```
+2. Deploy the stack and open the Web UI at `https://yoursubdomain.yourdomain.com` to complete the wizard steps.
+3. When the wizard asks for the **Admin Web Interface** port, select **`80`** (the default).
+4. After clicking finish, the container will shift to port 80, causing a `502 Bad Gateway`.
+5. Update `docker-compose.yml` to change the load balancer port back to **`80`**:
+   ```yaml
+   - "traefik.http.services.adguard.loadbalancer.server.port=80"
+   ```
+6. Re-deploy the stack. The dashboard will load securely on port 80.
+
+### 3. DNS Configuration (Split-Horizon)
 AdGuard Home is configured to rewrite DNS requests for your internal domain to keep traffic local.
 
 *   **Wildcard Rewrite:** `*.yourdomain.com` → `192.168.1.X`
@@ -55,7 +70,7 @@ AdGuard Home is configured to rewrite DNS requests for your internal domain to k
 
 This setting is managed in the Web UI: **AdGuard Home ➔ Filters ➔ DNS rewrites**.
 
-### 3. Client Setup
+### 4. Client Setup
 To utilize Poseidon, clients (or your main router) must be configured to use your DNS server's IP as their primary DNS server.
 
 **Linux/macOS/Windows:**
