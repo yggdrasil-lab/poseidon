@@ -1,6 +1,6 @@
 services:
   adguardhome:
-    image: adguard/adguardhome
+    image: adguard/adguardhome:latest
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -22,7 +22,7 @@ services:
           - node.role == manager
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.adguard.rule=Host(`adguard.$${DOMAIN_NAME}`)"
+        - "traefik.http.routers.adguard.rule=Host(`adguard.${DOMAIN_NAME}`)"
         - "traefik.http.routers.adguard.entrypoints=websecure"
         - "traefik.http.routers.adguard.tls.certresolver=cloudflare"
         - "traefik.http.services.adguard.loadbalancer.server.port=3000"
