@@ -17,7 +17,7 @@ jobs:
         env:
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           STACK_NAME: poseidon
-          SEARXNG_SECRET: ${{ vars.SEARXNG_SECRET || '' }}
+          SEARXNG_SECRET: ${{ secrets.SEARXNG_SECRET || vars.SEARXNG_SECRET || '' }}
         run: |
           # Generate SearXNG secret key for session signing (stable across deploys if set as GitHub var)
           if [ -z "${SEARXNG_SECRET}" ]; then
