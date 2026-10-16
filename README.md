@@ -51,7 +51,7 @@ graph TD
 ## Deployment
 
 Deploys automatically via GitHub Actions on the Gaia runner (`.github/workflows/deploy.yml`).
-Manual deployment on Gaia:
+Manual deployment on Gaia (via `/usr/local/bin/deploy.sh`):
 ```bash
-./scripts/deploy.sh "poseidon" docker-compose.yml
+deploy.sh "poseidon" docker-compose.yml
 ```
