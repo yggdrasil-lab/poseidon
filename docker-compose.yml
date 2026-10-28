@@ -12,8 +12,6 @@ services:
       - CAMOFOX_IDLE_EXIT_TIMEOUT_MS=86400000
     networks:
       - aether-net
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
     deploy:
       mode: replicated
       replicas: 1
@@ -41,8 +39,6 @@ services:
       - TZ=Pacific/Auckland
     networks:
       - aether-net
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
     deploy:
       mode: replicated
       replicas: 1
@@ -51,6 +47,11 @@ services:
           - node.role == manager
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
 
   flaresolverr:
     image: ghcr.io/thephaseless/byparr:latest
@@ -59,8 +60,6 @@ services:
       - LOG_LEVEL=INFO
     networks:
       - aether-net
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
     deploy:
       mode: replicated
       replicas: 1
@@ -77,8 +76,6 @@ services:
 
   browserless:
     image: ghcr.io/browserless/chromium:latest
-    ports:
-      - "3000:3000"
     volumes:
       - browserless_data:/data
     environment:
@@ -87,8 +84,6 @@ services:
       - TIMEOUT=60000
     networks:
       - aether-net
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
     deploy:
       mode: replicated
       replicas: 1
@@ -111,8 +106,6 @@ services:
       - TZ=Pacific/Auckland
     networks:
       - aether-net
-    labels:
-      - "com.docker.compose.project=${STACK_NAME}"
     deploy:
       mode: replicated
       replicas: 1
@@ -138,6 +131,8 @@ networks:
 
 configs:
   searxng_settings:
+    name: searxng_settings_${SEARXNG_SETTINGS_HASH}
     file: ./config/searxng/settings.yml
   searxng_limiter:
+    name: searxng_limiter_${SEARXNG_LIMITER_HASH}
     file: ./config/searxng/limiter.toml
