@@ -17,14 +17,18 @@ jobs:
         env:
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           STACK_NAME: poseidon
-          SEARXNG_SECRET: ${{ secrets.SEARXNG_SECRET || vars.SEARXNG_SECRET || '' }}
+          SEARXNG_SECRET: ${{ secrets.SEARXNG_SECRET }}
         run: |
-          # Generate SearXNG secret key for session signing (stable across deploys if set as GitHub var)
           if [ -z "${SEARXNG_SECRET}" ]; then
-            export SEARXNG_SECRET=$(openssl rand -hex 32)
-            echo "SEARXNG_SECRET=${SEARXNG_SECRET}" >> $GITHUB_ENV
+            echo "Error: SEARXNG_SECRET secret is required" >&2
+            exit 1
           fi
           python3 -c "import os; open('config/searxng/settings.yml', 'w').write(os.path.expandvars(open('config/searxng/settings.yml.template').read()))"
+
+          export SEARXNG_SETTINGS_HASH=$(sha256sum config/searxng/settings.yml | cut -c1-8)
+          export SEARXNG_LIMITER_HASH=$(sha256sum config/searxng/limiter.toml | cut -c1-8)
+          echo "SEARXNG_SETTINGS_HASH=${SEARXNG_SETTINGS_HASH}" >> $GITHUB_ENV
+          echo "SEARXNG_LIMITER_HASH=${SEARXNG_LIMITER_HASH}" >> $GITHUB_ENV
 
           curl -fsSL https://raw.githubusercontent.com/yggdrasil-lab/yggdrasil-os/main/deploy/deploy.sh -o /tmp/deploy.sh
           chmod +x /tmp/deploy.sh
