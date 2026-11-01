@@ -109,7 +109,7 @@ services:
   playwright:
     image: mcr.microsoft.com/playwright/mcp:latest
     entrypoint: ["node"]
-    command: ["/app/cli.js", "--headless", "--browser", "chromium", "--no-sandbox", "--host", "0.0.0.0", "--port", "8931"]
+    command: ["/app/cli.js", "--headless", "--browser", "chromium", "--no-sandbox", "--host", "0.0.0.0", "--port", "8931", "--allowed-hosts", "*"]
     environment:
       - TZ=Pacific/Auckland
     networks:
