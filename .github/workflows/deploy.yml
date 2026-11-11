@@ -13,16 +13,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate Required Configuration
+        env:
+          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          SEARXNG_SECRET: ${{ secrets.SEARXNG_SECRET }}
+        run: |
+          MISSING=""
+          [ -z "$DOMAIN_NAME" ] && MISSING="$MISSING DOMAIN_NAME"
+          [ -z "$SEARXNG_SECRET" ] && MISSING="$MISSING SEARXNG_SECRET"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Deployment halted: missing required configuration:$MISSING" >&2
+            exit 1
+          fi
+
       - name: Deploy Stack
         env:
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           STACK_NAME: poseidon
           SEARXNG_SECRET: ${{ secrets.SEARXNG_SECRET }}
         run: |
-          if [ -z "${SEARXNG_SECRET}" ]; then
-            echo "Error: SEARXNG_SECRET secret is required" >&2
-            exit 1
-          fi
           python3 -c "import os; open('config/searxng/settings.yml', 'w').write(os.path.expandvars(open('config/searxng/settings.yml.template').read()))"
 
           export SEARXNG_SETTINGS_HASH=$(sha256sum config/searxng/settings.yml | cut -c1-8)

@@ -14,6 +14,12 @@ services:
       - aether-net
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9377/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     deploy:
       mode: replicated
       replicas: 1
@@ -43,6 +49,12 @@ services:
       - aether-net
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     deploy:
       mode: replicated
       replicas: 1
@@ -66,6 +78,12 @@ services:
       - aether-net
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8191/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     deploy:
       mode: replicated
       replicas: 1
@@ -92,6 +110,12 @@ services:
       - aether-net
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/pressure"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     deploy:
       mode: replicated
       replicas: 1
@@ -116,6 +140,12 @@ services:
       - aether-net
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:8931/sse', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     deploy:
       mode: replicated
       replicas: 1
