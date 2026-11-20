@@ -23,6 +23,7 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      endpoint_mode: dnsrr
       placement:
         constraints:
           - node.role == manager
@@ -58,11 +59,12 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      endpoint_mode: dnsrr
       placement:
         constraints:
           - node.role == manager
       restart_policy:
-        condition: on-failure
+        condition: any
       resources:
         limits:
           memory: 512M
@@ -87,11 +89,12 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      endpoint_mode: dnsrr
       placement:
         constraints:
           - node.role == manager
       restart_policy:
-        condition: on-failure
+        condition: any
       resources:
         limits:
           memory: 1G
@@ -119,11 +122,12 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      endpoint_mode: dnsrr
       placement:
         constraints:
           - node.role == manager
       restart_policy:
-        condition: on-failure
+        condition: any
       resources:
         limits:
           memory: 2G
@@ -149,11 +153,12 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      endpoint_mode: dnsrr
       placement:
         constraints:
           - node.role == manager
       restart_policy:
-        condition: on-failure
+        condition: any
       resources:
         limits:
           memory: 1G
