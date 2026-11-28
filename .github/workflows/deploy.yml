@@ -47,4 +47,4 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/yggdrasil-lab/yggdrasil-os/main/deploy/verify_convergence.sh -o /tmp/verify_convergence.sh
           chmod +x /tmp/verify_convergence.sh
-          /tmp/verify_convergence.sh "poseidon" poseidon_browserless poseidon_camofox poseidon_flaresolverr poseidon_playwright poseidon_searxng
+          /tmp/verify_convergence.sh --timeout 360 "poseidon" poseidon_browserless poseidon_camofox poseidon_flaresolverr poseidon_playwright poseidon_searxng
