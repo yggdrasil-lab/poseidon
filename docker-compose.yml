@@ -73,6 +73,11 @@ services:
 
   flaresolverr:
     image: ghcr.io/thephaseless/byparr:latest
+    volumes:
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 536870912
     environment:
       - TZ=Pacific/Auckland
       - LOG_LEVEL=INFO
@@ -81,11 +86,11 @@ services:
     labels:
       - "com.docker.compose.project=${STACK_NAME}"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8191/health"]
+      test: ["CMD", "curl", "-fsSL", "-o", "/dev/null", "http://localhost:8191/"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 15s
+      start_period: 30s
     deploy:
       mode: replicated
       replicas: 1
@@ -97,7 +102,7 @@ services:
         condition: any
       resources:
         limits:
-          memory: 1G
+          memory: 2G
         reservations:
           memory: 256M
 
